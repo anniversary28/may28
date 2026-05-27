@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy 2nd Anniversary — Abbishek & Ramya</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crimson: #8B1A2E;
+    --rose: #C9445A;
+    --blush: #F2C4CE;
+    --cream: #FDF6F0;
+    --gold: #C9973A;
+    --deep: #1A0A10;
+    --petal: #FAE8ED;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--deep);
+    color: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* ─── INTRO SCREEN ─── */
+  #intro {
+    position: fixed;
+    inset: 0;
+    background: var(--deep);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+  #intro.hidden { opacity: 0; pointer-events: none; transform: scale(1.04); }
+
+  .pixel-hearts {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 2rem;
+    animation: float 2s ease-in-out infinite;
+  }
+  .pixel-heart {
+    width: 20px; height: 20px;
+    background: var(--rose);
+    position: relative;
+    transform: rotate(-45deg);
+    animation: pulse-heart 1.4s ease-in-out infinite;
+  }
+  .pixel-heart::before, .pixel-heart::after {
+    content: '';
+    position: absolute;
+    width: 20px; height: 20px;
+    background: var(--rose);
+    border-radius: 50%;
+  }
+  .pixel-heart::before { top: -10px; left: 0; }
+  .pixel-heart::after { top: 0; left: 10px; }
+  .pixel-heart:nth-child(2) { animation-delay: 0.2s; }
+  .pixel-heart:nth-child(3) { animation-delay: 0.4s; }
+  .pixel-heart:nth-child(4) { animation-delay: 0.6s; }
+  .pixel-heart:nth-child(5) { animation-delay: 0.8s; }
+
+  #intro h1 {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: var(--blush);
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+  #intro p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--gold);
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    margin-bottom: 3rem;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  .btn-yes {
+    background: var(--crimson);
+    color: var(--cream);
+    border: 2px solid var(--rose);
+    padding: 1rem 3rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-yes::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--rose);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+  .btn-yes:hover::before { transform: scaleX(1); }
+  .btn-yes:hover { border-color: var(--blush); }
+
+  /* ─── PETALS ─── */
+  .petal-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .petal {
+    position: absolute;
+    top: -30px;
+    width: 12px; height: 18px;
+    background: var(--blush);
+    border-radius: 80% 0 80% 0;
+    opacity: 0.7;
+    animation: fall linear infinite;
+  }
+
+  @keyframes fall {
+    0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0.7; }
+    50% { transform: translateY(50vh) rotate(180deg) translateX(40px); opacity: 0.5; }
+    100% { transform: translateY(110vh) rotate(360deg) translateX(-20px); opacity: 0; }
+  }
+
+  /* ─── MAIN PAGE ─── */
+  #main { display: none; }
+  #main.visible { display: block; }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    position: relative;
+    background: radial-gradient(ellipse at center, #2D0A18 0%, var(--deep) 70%);
+  }
+
+  .hero-year {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(5rem, 20vw, 14rem);
+    font-weight: 700;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(201,151,58,0.3);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .hero-content { position: relative; z-index: 2; }
+
+  .hero-tag {
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-names {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(3.5rem, 12vw, 8rem);
+    line-height: 1;
+    background: linear-gradient(135deg, var(--blush), var(--gold), var(--rose));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+
+  .hero-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    font-style: italic;
+    color: var(--blush);
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-sub {
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    letter-spacing: 0.2em;
+    color: rgba(242,196,206,0.6);
+    margin-bottom: 3rem;
+  }
+
+  .scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(201,151,58,0.5);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  .scroll-hint span { font-size: 1.5rem; }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  /* ─── SECTION BASE ─── */
+  section {
+    padding: clamp(4rem, 10vw, 8rem) 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    text-align: center;
+    color: var(--blush);
+    margin-bottom: 3rem;
+    line-height: 1.2;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    margin: 4rem auto;
+    opacity: 0.3;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    max-width: 200px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .divider-heart { color: var(--rose); font-size: 1rem; }
+
+  /* ─── TIMELINE ─── */
+  .timeline {
+    position: relative;
+    padding: 0 0 2rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--rose), transparent);
+    transform: translateX(-50%);
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 4rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .timeline-item.visible { opacity: 1; transform: none; }
+
+  .timeline-item:nth-child(odd) { flex-direction: row-reverse; }
+  .timeline-item:nth-child(odd) .timeline-card { text-align: right; }
+
+  .timeline-dot {
+    position: absolute;
+    left: 50%;
+    top: 1.5rem;
+    transform: translate(-50%, -50%);
+    width: 16px; height: 16px;
+    background: var(--rose);
+    border: 2px solid var(--crimson);
+    border-radius: 50%;
+    flex-shrink: 0;
+    z-index: 2;
+    box-shadow: 0 0 0 4px rgba(201,68,90,0.2);
+  }
+
+  .timeline-card {
+    flex: 1;
+    padding: 1.5rem 2rem;
+    background: rgba(139,26,46,0.12);
+    border: 1px solid rgba(201,68,90,0.2);
+    position: relative;
+    max-width: calc(50% - 2rem);
+  }
+
+  .timeline-card::before {
+    content: '';
+    position: absolute;
+    top: 1.5rem;
+    width: 0; height: 0;
+    border: 8px solid transparent;
+  }
+  .timeline-item:nth-child(even) .timeline-card::before {
+    right: -16px;
+    border-left-color: rgba(201,68,90,0.2);
+  }
+  .timeline-item:nth-child(odd) .timeline-card::before {
+    left: -16px;
+    border-right-color: rgba(201,68,90,0.2);
+  }
+
+  .timeline-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-date {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--blush);
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(253,246,240,0.7);
+    font-style: italic;
+  }
+
+  /* ─── LOVE STATS ─── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .stat-card {
+    text-align: center;
+    padding: 2rem 1rem;
+    border: 1px solid rgba(201,68,90,0.25);
+    background: rgba(139,26,46,0.08);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .stat-card.visible { opacity: 1; transform: none; }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(201,68,90,0.08), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .stat-card:hover::before { opacity: 1; }
+
+  .stat-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(242,196,206,0.6);
+  }
+
+  /* ─── PROMISE SECTION ─── */
+  .promise-wrap {
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  .promise-list {
+    list-style: none;
+    margin: 2rem 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .promise-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-left: 2px solid var(--rose);
+    background: rgba(139,26,46,0.08);
+    text-align: left;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    font-size: 1rem;
+    line-height: 1.6;
+    font-style: italic;
+    color: rgba(253,246,240,0.85);
+  }
+  .promise-item.visible { opacity: 1; transform: none; }
+  .promise-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+  /* ─── LETTER SECTION ─── */
+  .letter {
+    max-width: 650px;
+    margin: 0 auto;
+    padding: 3rem 2.5rem;
+    background: rgba(253,246,240,0.04);
+    border: 1px solid rgba(201,151,58,0.2);
+    position: relative;
+  }
+  .letter::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    color: rgba(201,68,90,0.12);
+    position: absolute;
+    top: -1rem;
+    left: 1rem;
+    line-height: 1;
+  }
+
+  .letter p {
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    line-height: 1.9;
+    font-style: italic;
+    color: rgba(253,246,240,0.85);
+    margin-bottom: 1.5rem;
+  }
+
+  .letter-sig {
+    font-family: 'Sacramento', cursive;
+    font-size: 2.5rem;
+    color: var(--gold);
+    text-align: right;
+    margin-top: 2rem;
+  }
+
+  /* ─── COUNTER ─── */
+  .counter-wrap {
+    text-align: center;
+    padding: 4rem 1.5rem;
+    background: radial-gradient(ellipse at center, #2D0A18 0%, transparent 70%);
+  }
+
+  .counter-grid {
+    display: flex;
+    justify-content: center;
+    gap: clamp(1rem, 4vw, 3rem);
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  .counter-unit {
+    text-align: center;
+  }
+
+  .counter-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: var(--blush);
+    line-height: 1;
+    display: block;
+  }
+
+  .counter-lbl {
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 0.5rem;
+  }
+
+  .counter-sep {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 4rem);
+    color: rgba(201,68,90,0.4);
+    align-self: flex-start;
+    padding-top: 0.3rem;
+  }
+
+  /* ─── FINAL ─── */
+  .final {
+    text-align: center;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+    position: relative;
+  }
+
+  .final-heart {
+    font-size: clamp(4rem, 15vw, 8rem);
+    animation: pulse-big 2s ease-in-out infinite;
+    display: block;
+    margin-bottom: 2rem;
+  }
+
+  .final-title {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(3rem, 10vw, 6rem);
+    color: var(--blush);
+    margin-bottom: 1rem;
+  }
+
+  .final-sub {
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    font-style: italic;
+    color: rgba(242,196,206,0.6);
+    max-width: 500px;
+    line-height: 1.7;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes pulse-heart {
+    0%, 100% { transform: rotate(-45deg) scale(1); }
+    50% { transform: rotate(-45deg) scale(1.15); }
+  }
+  @keyframes pulse-big {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 640px) {
+    .timeline::before { left: 16px; }
+    .timeline-item, .timeline-item:nth-child(odd) { flex-direction: column; }
+    .timeline-dot { left: 16px; }
+    .timeline-card { max-width: 100%; margin-left: 2.5rem; }
+    .timeline-item:nth-child(odd) .timeline-card { text-align: left; }
+    .timeline-card::before { display: none; }
+    .counter-sep { display: none; }
+  }
+
+  /* ─── PARTICLE EFFECT ─── */
+  canvas#particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- ── INTRO SCREEN ── -->
+<div id="intro">
+  <div class="pixel-hearts">
+    <div class="pixel-heart"></div>
+    <div class="pixel-heart"></div>
+    <div class="pixel-heart"></div>
+    <div class="pixel-heart"></div>
+    <div class="pixel-heart"></div>
+  </div>
+  <h1>Hi, Ramya!</h1>
+  <p>Someone made something special just for you 💕<br>Do you want to see a little surprise?</p>
+  <button class="btn-yes" onclick="startJourney()">Yes, show me ✨</button>
+</div>
+
+<!-- ── PETAL RAIN ── -->
+<div class="petal-container" id="petals"></div>
+
+<!-- ── MAIN CONTENT ── -->
+<div id="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-year">02</div>
+    <div class="hero-content">
+      <p class="hero-tag">Happy 2nd Anniversary</p>
+      <h1 class="hero-names">Abbishek<br>&amp; Ramya</h1>
+      <p class="hero-date">May 28 · Two years of forever</p>
+      <p class="hero-sub">Counting every heartbeat since that day</p>
+      <div class="scroll-hint">
+        <span>↓</span>
+        <span style="font-size:0.7rem;letter-spacing:0.3em">our story</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE COUNTER -->
+  <div class="counter-wrap">
+    <p class="section-label">Together Since</p>
+    <h2 class="section-title" style="font-size:clamp(1.5rem,4vw,2.5rem);">May 28, 2024</h2>
+    <div class="counter-grid">
+      <div class="counter-unit">
+        <span class="counter-num" id="c-days">000</span>
+        <span class="counter-lbl">Days</span>
+      </div>
+      <div class="counter-sep">:</div>
+      <div class="counter-unit">
+        <span class="counter-num" id="c-hours">00</span>
+        <span class="counter-lbl">Hours</span>
+      </div>
+      <div class="counter-sep">:</div>
+      <div class="counter-unit">
+        <span class="counter-num" id="c-mins">00</span>
+        <span class="counter-lbl">Minutes</span>
+      </div>
+      <div class="counter-sep">:</div>
+      <div class="counter-unit">
+        <span class="counter-num" id="c-secs">00</span>
+        <span class="counter-lbl">Seconds</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><span class="divider-heart">♥</span></div>
+
+  <!-- LOVE STORY TIMELINE -->
+  <section>
+    <p class="section-label">How it all began</p>
+    <h2 class="section-title">Our Story</h2>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-icon">🏟️</div>
+          <div class="timeline-date">The Beginning</div>
+          <h3 class="timeline-title">Love at the Stadium</h3>
+          <p class="timeline-text">Among thousands, eyes found eyes. The crowd faded, the noise softened — and in that single glance, something irreversible began. Abbishek's heart had already made its choice.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-icon">🥤</div>
+          <div class="timeline-date">Same Day</div>
+          <h3 class="timeline-title">The Juice Date</h3>
+          <p class="timeline-text">That very same day, two glasses clinked, two smiles lit up, and conversation flowed like it had known no beginning. The first of many stolen moments together.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-icon">🎬</div>
+          <div class="timeline-date">Under the Big Screen</div>
+          <h3 class="timeline-title">The Theatre Chapter</h3>
+          <p class="timeline-text">Sitting side by side in the dark, Something much more cinematic was unfolding between them — both hearts finally saying what words hadn't yet.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-icon">💌</div>
+          <div class="timeline-date">May 28</div>
+          <h3 class="timeline-title">He Said "Yes" First</h3>
+          <p class="timeline-text">Ramya spoke the words. Brave, beautiful, certain. And Abbishek said yes without a moment's hesitation. The world rearranged itself around that single, perfect moment.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-icon">✈️</div>
+          <div class="timeline-date">Every Week</div>
+          <h3 class="timeline-title">The Airport Ritual</h3>
+          <p class="timeline-text">Walkways, and the weekly countdown to seeing each other again. The airport became their temple — every reunion sweeter than the last, every goodbye a reason to return.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-icon">☎️</div>
+          <div class="timeline-date">Every Evening</div>
+          <h3 class="timeline-title">Late Night Calls</h3>
+          <p class="timeline-text">Phones that never ran out of things to say. Midnight giggles, soft voices, sharing the small details of the day — those hours became the favourite part of every twenty-four.</p>
+        </div>
+      </div>
+
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-icon">🌅</div>
+          <div class="timeline-date">Today</div>
+          <h3 class="timeline-title">Year Two &amp; Counting</h3>
+          <p class="timeline-text">Two years of growing together, of becoming each other's home. What started at a stadium now lives in every ordinary morning, every gentle look, every quiet "I love you."</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"><span class="divider-heart">♥</span></div>
+
+  <!-- LOVE STATS -->
+  <section>
+    <p class="section-label">By the Numbers</p>
+    <h2 class="section-title">A Love in Counts</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">☀️</div>
+        <div class="stat-number" id="days-count">730</div>
+        <div class="stat-label">Days Together</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📞</div>
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Calls Made</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💬</div>
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Messages Sent</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">😂</div>
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Laughs Shared</div>
+      </div>
+      
+      <div class="stat-card" >
+        <div class="stat-icon">❤️</div>
+        <div class="stat-number">1</div>
+        <div class="stat-label">Love of a Lifetime</div>
+      </div>
+      
+    </div>
+  </section>
+
+  <div class="divider"><span class="divider-heart">♥</span></div>
+
+  <!-- PROMISES -->
+  <section>
+    <p class="section-label">From Abbishek</p>
+    <h2 class="section-title">My Promises to You</h2>
+    <div class="promise-wrap">
+      <ul class="promise-list">
+        <li class="promise-item"><span class="promise-icon">🌙</span>I promise to be your calm in every storm and your laughter in every quiet moment.</li>
+        <li class="promise-item"><span class="promise-icon">🎬</span>I will always choose the seat next to yours — in theatres, in life, in everything.</li>
+        <li class="promise-item"><span class="promise-icon">🥤</span>Every ordinary day with you will be our most beautiful date yet.</li>
+        <li class="promise-item"><span class="promise-icon">💌</span>I will never stop being grateful that you were brave enough to say it first.</li>
+        <li class="promise-item"><span class="promise-icon">🌅</span>I choose you. Today, tomorrow, and every May 28th still to come.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="divider"><span class="divider-heart">♥</span></div>
+
+  <!-- LETTER -->
+  <section>
+    <p class="section-label">With All My Heart</p>
+    <h2 class="section-title">A Letter to Ramya</h2>
+    <div class="letter">
+      <p>My dearest Ramya,</p>
+      <p>Two years ago I walked into a stadium not knowing that the most important thing that would happen that day had nothing to do with the game. It was you.</p>
+      <p>I have replayed that moment a thousand times — the way you looked, the way the world suddenly made a different kind of sense. And then, impossibly.</p>
+      <p>When you proposed on May 28, I think my heart already knew before my mind caught up. You were brave. You are always brave. I get to spend every week counting down to the airport, every evening reaching for my phone, every meal thinking about how everything is better when shared with you.</p>
+      <p>Here's to two years. Here's to every year that follows. Here's to us — the story I'm most proud of.</p>
+      <div class="letter-sig">Forever yours, Abbishek</div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final">
+    <span class="final-heart">❤️</span>
+    <h2 class="final-title">Happy 2nd Anniversary</h2>
+    <p class="final-sub">Ramya &amp; Abbishek — May 28, 2026<br>Here's to every adventure still ahead of us.</p>
+  </div>
+
+</div>
+
+<script>
+  // ── INTRO ──
+  function startJourney() {
+    document.getElementById('intro').classList.add('hidden');
+    document.getElementById('main').classList.add('visible');
+    createPetals();
+    startCounter();
+    initObserver();
+    initParticles();
+  }
+
+  // ── PETALS ──
+  function createPetals() {
+    const container = document.getElementById('petals');
+    for (let i = 0; i < 20; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.animationDuration = (5 + Math.random() * 8) + 's';
+      p.style.animationDelay = (Math.random() * 10) + 's';
+      p.style.width = (8 + Math.random() * 10) + 'px';
+      p.style.height = (12 + Math.random() * 14) + 'px';
+      p.style.opacity = 0.4 + Math.random() * 0.4;
+      p.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+      container.appendChild(p);
+    }
+  }
+
+  // ── COUNTER ──
+  function startCounter() {
+    const start = new Date('2023-05-28T00:00:00');
+    function tick() {
+      const now = new Date();
+      const diff = now - start;
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      document.getElementById('c-days').textContent = String(days).padStart(3, '0');
+      document.getElementById('c-hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('c-mins').textContent = String(mins).padStart(2, '0');
+      document.getElementById('c-secs').textContent = String(secs).padStart(2, '0');
+      document.getElementById('days-count').textContent = days;
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  // ── SCROLL OBSERVER ──
+  function initObserver() {
+    const targets = document.querySelectorAll('.timeline-item, .stat-card, .promise-item');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.15 });
+    targets.forEach(t => obs.observe(t));
+  }
+
+  // ── PARTICLE CANVAS ──
+  function initParticles() {
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    });
+
+    const particles = Array.from({ length: 50 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: 0.5 + Math.random() * 1.5,
+      dx: (Math.random() - 0.5) * 0.3,
+      dy: (Math.random() - 0.5) * 0.3,
+      a: Math.random()
+    }));
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(201,68,90,${p.a * 0.5})`;
+        ctx.fill();
+        p.x += p.dx; p.y += p.dy;
+        if (p.x < 0 || p.x > W) p.dx *= -1;
+        if (p.y < 0 || p.y > H) p.dy *= -1;
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+</script>
+</body>
+</html>
